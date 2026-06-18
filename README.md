@@ -6,7 +6,7 @@ zizofa-allocs-backend/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                  # Initialisation FastAPI et inclusion des routeurs
-│   │
+│   │           
 │   ├── api/                     # Couche transport (Endpoints HTTP)
 │   │   ├── __init__.py
 │   │   ├── v1/
