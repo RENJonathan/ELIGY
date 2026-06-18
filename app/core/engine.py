@@ -1,65 +1,97 @@
 from app.models.schemas import UserProfile, BenefitEvaluation, CriterionResult
 from app.core.variables import RuleVariables
-from app.models.rules_config import BENEFITS_RULES_SPECIFICATION
+from app.models.rules_config import RAW_RULES_CONFIG
 
 class BusinessRuleEvaluator:
     @staticmethod
-    def evaluate_operator(actual_value, operator: str, target_value) -> bool:
-        """Executes basic predicate evaluations akin to a business-rules engine."""
-        if operator == "equal_to":
-            return actual_value == target_value
-        if operator == "less_than_or_equal_to":
-            return actual_value <= target_value
-        if operator == "greater_than_or_equal_to":
-            return actual_value >= target_value
-        if operator == "less_than":
-            return actual_value < target_value
-        if operator == "greater_than":
-            return actual_value > target_value
+    def _evaluate_condition_value(config_key: str, expected_val, actual_val) -> bool:
+        """Infers the mathematical operator from the JSON key syntax."""
+        if actual_val is None:
+            return False
+            
+        # Handle IN operator (list of allowed values)
+        if isinstance(expected_val, list) and not isinstance(expected_val[0], dict):
+            return actual_val in expected_val
+            
+        # Handle exact match (Booleans and Strings)
+        if isinstance(expected_val, (bool, str)):
+            return actual_val == expected_val
+            
+        # Handle inferred numerical ranges
+        if isinstance(expected_val, (int, float)):
+            if "min" in config_key or "under_age" in config_key:
+                return actual_val >= expected_val if "min" in config_key else actual_val <= expected_val
+            return actual_val == expected_val
+            
         return False
 
     @staticmethod
+    def _evaluate_block(conditions: dict | list, variables_map: dict) -> bool:
+        """Recursively parses logical blocks (AND, OR, ANY) from the JSON."""
+        
+        # If it's a list (used inside 'or' blocks), at least one dict must pass
+        if isinstance(conditions, list):
+            return any(BusinessRuleEvaluator._evaluate_block(sub_cond, variables_map) for sub_cond in conditions)
+
+        # Iterate through key-value pairs (Implicit AND within a dict)
+        for key, value in conditions.items():
+            if key in ["any", "or"]:
+                # OR logic: Return True if at least one sub-condition passes
+                block_passed = False
+                if isinstance(value, dict):
+                    block_passed = any(BusinessRuleEvaluator._evaluate_block({k: v}, variables_map) for k, v in value.items())
+                elif isinstance(value, list):
+                    block_passed = BusinessRuleEvaluator._evaluate_block(value, variables_map)
+                
+                if not block_passed:
+                    return False
+            else:
+                # Standard explicit condition evaluation
+                actual_val = variables_map.get(key)
+                if not BusinessRuleEvaluator._evaluate_condition_value(key, value, actual_val):
+                    return False
+                    
+        return True
+
+    @staticmethod
     def run(profile: UserProfile) -> list[BenefitEvaluation]:
-        variables = RuleVariables(profile)
+        variables_map = RuleVariables.extract(profile)
         evaluations = []
 
-        for benefit_name, spec in BENEFITS_RULES_SPECIFICATION.items():
+        rules_dict = RAW_RULES_CONFIG.get("rules", {})
+        
+        # Map JSON keys to clean output names
+        benefit_names = {
+            "prime_activite": "Prime d'activité",
+            "ame": "Aide Médicale de l'État (AME)",
+            "allocations_familiales": "Allocations Familiales"
+        }
+
+        for benefit_key, rules_list in rules_dict.items():
             criteria_results = []
             benefit_eligible = True
 
-            for criterion in spec["criteria"]:
-                actual_val = variables.get_value(criterion["variable"])
-                op = criterion["operator"]
-                target_val = criterion["value"]
+            # Evaluate each rule object (PA_1, PA_2...)
+            for rule in rules_list:
+                rule_name = rule.get("name", rule.get("id"))
+                conditions = rule.get("conditions", {})
                 
-                # Evaluate single condition
-                status = BusinessRuleEvaluator.evaluate_operator(actual_val, op, target_val)
+                # Check if the entire rule block passes
+                status = BusinessRuleEvaluator._evaluate_block(conditions, variables_map)
                 
                 if not status:
                     benefit_eligible = False
 
                 criteria_results.append(CriterionResult(
-                    criterion_name=criterion["name"],
+                    criterion_name=f"[{rule.get('id')}] {rule_name}",
                     status=status,
-                    details=f"Condition: '{criterion['variable']}' {op} {target_val}. Valeur réelle: {actual_val}"
+                    details="Validé" if status else "Échec des conditions requises."
                 ))
 
-            # Dynamic Amount modulation logic if eligible
-            estimated_amount = None
-            if benefit_eligible and spec["calculate_amount"]:
-                base = spec["base_amount"]
-                if benefit_name == "Allocations Familiales":
-                    children = variables.get_value("dependent_children_count")
-                    resources = variables.get_value("household_total_resources")
-                    computed = children * base
-                    estimated_amount = computed * 0.25 if resources > 6000.0 else computed
-                else:
-                    estimated_amount = base
-
             evaluations.append(BenefitEvaluation(
-                benefit_name=benefit_name,
+                benefit_name=benefit_names.get(benefit_key, benefit_key),
                 eligible=benefit_eligible,
-                estimated_amount=estimated_amount,
+                estimated_amount=None,  # Amounts stripped to focus on pure eligibility per your JSON
                 criteria_details=criteria_results
             ))
 
