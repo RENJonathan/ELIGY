@@ -1,6 +1,6 @@
-from app.schemas import UserProfile, BenefitEvaluation, CriterionResult
-from app.variables import RuleVariables
-from app.rules_config import BENEFITS_RULES_SPECIFICATION
+from app.models.schemas import UserProfile, BenefitEvaluation, CriterionResult
+from app.core.variables import RuleVariables
+from app.models.rules_config import BENEFITS_RULES_SPECIFICATION
 
 class BusinessRuleEvaluator:
     @staticmethod
