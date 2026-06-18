@@ -1,0 +1,28 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.python-version
+
+# === Environments ===
+.venv/
+venv/
+ENV/
+env/
+build/
+dist/
+
+# === IDEs and Editors ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Operating System files ===
+.DS_Store
+Thumbs.db
+
+# === Configuration & Secrets (CRITICAL) ===
+.env
+.env.local
