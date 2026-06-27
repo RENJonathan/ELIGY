@@ -1,33 +1,54 @@
+# Eligy
 
+Eligy est un simulateur indicatif d’éligibilité aux aides sociales. Le questionnaire React collecte la situation de l’utilisateur, envoie le profil à une API FastAPI, puis affiche le résultat détaillé du moteur de règles.
 
+Le prototype couvre actuellement :
+
+- la prime d’activité ;
+- l’aide médicale de l’État (AME) ;
+- les allocations familiales.
+
+> Les résultats sont indicatifs. Les règles et seuils doivent être validés et maintenus à partir de sources administratives officielles avant toute mise en production.
+
+## Lancer le projet
+
+### API
+
+Depuis la racine du dépôt :
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r Requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
 ```
-zizofa-allocs-backend/
-│
-├── app/
-│   ├── __init__.py
-│   ├── main.py                  # Initialisation FastAPI et inclusion des routeurs
-│   │           
-│   ├── api/                     # Couche transport (Endpoints HTTP)
-│   │   ├── __init__.py
-│   │   ├── v1/
-│   │   │   ├── __init__.py
-│   │   │   └── evaluate.py      # Route POST /api/v1/evaluate
-│   │
-│   ├── core/                    # Logique métier pure (Moteur de règles)
-│   │   ├── __init__.py
-│   │   ├── engine.py            # BusinessRuleEvaluator (Interprète)
-│   │   └── variables.py         # RuleVariables (Adaptateur de profil)
-│   │
-│   ├── models/                  # Schémas de données et configurations
-│   │   ├── __init__.py
-│   │   ├── schemas.py           # Modèles de validation Pydantic
-│   │   └── rules_config.py      # Registre de règles (Déclaratif JSON)
-│   │
-│   └── tests/                   # Suite de tests automatisés (Profils types)
-│       ├── __init__.py
-│       ├── test_prime_activite.py
-│       └── test_ame.py
-│
-├── requirements.txt             # Dépendances (fastapi, uvicorn, pydantic)
-└── README.md
+
+L’API est disponible sur `http://127.0.0.1:8000`. Sa documentation interactive se trouve sur `http://127.0.0.1:8000/docs`.
+
+### Interface
+
+Dans un second terminal :
+
+```powershell
+cd allocs
+npm install
+npm run dev
 ```
+
+Ouvrir ensuite `http://localhost:5173`. Le serveur Vite transmet automatiquement les appels `/api` à FastAPI.
+
+## Vérifications
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+cd allocs
+npm run lint
+npm run build
+```
+
+## Structure
+
+- `app/api` : endpoints HTTP FastAPI ;
+- `app/core` : moteur de règles et adaptation du profil ;
+- `app/models` : schémas Pydantic et configuration des aides ;
+- `app/tests` : scénarios métier automatisés ;
+- `allocs/src` : questionnaire et rendu des résultats React.

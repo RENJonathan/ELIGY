@@ -12,6 +12,7 @@ ENV/
 env/
 build/
 dist/
+node_modules/
 
 # === IDEs and Editors ===
 .vscode/
