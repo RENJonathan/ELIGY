@@ -50,6 +50,9 @@ h2 { margin: 0; font: 800 clamp(1.45rem, 4vw, 2rem) Sora, sans-serif; }
 .benefit li > span { font-weight: 800; }
 .benefit li.pass > span { color: #21915a; }
 .benefit li.fail > span { color: #c34a40; }
+.benefit-action { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: 0 1rem 1rem; min-height: 44px; padding: .7rem 1rem; border-radius: 10px; color: white; background: #23895a; font: 700 .82rem Sora, sans-serif; text-decoration: none; transition: background .15s, transform .15s; }
+.benefit-action:hover { background: #176f48; transform: translateY(-1px); }
+.benefit-action:focus-visible { outline: 3px solid rgba(35,137,90,.25); outline-offset: 2px; }
 .footer { margin-top: auto; padding: 1.1rem; color: #aeb5c2; background: #172033; text-align: center; font-size: .72rem; }
 
 @media (max-width: 620px) {

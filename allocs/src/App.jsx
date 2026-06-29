@@ -31,6 +31,12 @@ const STATUS_OPTIONS = [
   ["other", "Autre situation"],
 ];
 
+const BENEFIT_ACTION_URLS = {
+  "Prime d'activité": "https://www.caf.fr/allocataires/aides-et-demarches/droits-et-prestations/vie-professionnelle/la-prime-d-activite",
+  "Aide Médicale de l'État (AME)": "https://www.service-public.gouv.fr/particuliers/vosdroits/F3079",
+  "Allocations Familiales": "https://www.caf.fr/allocataires/aides-et-demarches/droits-et-prestations/vie-personnelle/les-allocations-familiales-af",
+};
+
 function NumberField({ name, label, value, onChange, min = 0, max, suffix, error }) {
   return (
     <div className="field">
@@ -209,6 +215,16 @@ export default function Allocs() {
                         ))}
                       </ul>
                     </details>
+                    {benefit.eligible && BENEFIT_ACTION_URLS[benefit.benefit_name] && (
+                      <a
+                        className="benefit-action"
+                        href={BENEFIT_ACTION_URLS[benefit.benefit_name]}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Débuter les démarches <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
                   </article>
                 ))}
               </div>
