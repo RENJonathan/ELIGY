@@ -66,6 +66,11 @@ class BusinessRuleEvaluator:
             "ame": "Aide Médicale de l'État (AME)",
             "allocations_familiales": "Allocations Familiales"
         }
+        benefit_info_urls = {
+            "prime_activite": "https://www.service-public.gouv.fr/particuliers/vosdroits/R42724",
+            "ame": "https://www.ameli.fr/sites/default/files/formulaires/formulaire-ame-s3720i-homologue-2026.pdf",
+            "allocations_familiales": "https://www.service-public.gouv.fr/particuliers/vosdroits/R1292"
+        }
 
         for benefit_key, rules_list in rules_dict.items():
             criteria_results = []
@@ -92,6 +97,7 @@ class BusinessRuleEvaluator:
                 benefit_name=benefit_names.get(benefit_key, benefit_key),
                 eligible=benefit_eligible,
                 estimated_amount=None,  # Amounts stripped to focus on pure eligibility per your JSON
+                info_url=benefit_info_urls.get(benefit_key) if benefit_eligible else None,
                 criteria_details=criteria_results
             ))
 

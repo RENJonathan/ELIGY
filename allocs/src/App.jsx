@@ -215,16 +215,11 @@ export default function Allocs() {
                         ))}
                       </ul>
                     </details>
-                    {benefit.eligible && BENEFIT_ACTION_URLS[benefit.benefit_name] && (
-                      <a
-                        className="benefit-action"
-                        href={BENEFIT_ACTION_URLS[benefit.benefit_name]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Débuter les démarches <span aria-hidden="true">↗</span>
+                    {benefit.eligible && benefit.info_url ? (
+                      <a className="benefit-link" href={benefit.info_url} target="_blank" rel="noreferrer">
+                        Faire sa demande
                       </a>
-                    )}
+                    ) : null}
                   </article>
                 ))}
               </div>

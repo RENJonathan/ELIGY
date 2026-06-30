@@ -39,6 +39,7 @@ class BenefitEvaluation(BaseModel):
     benefit_name: str
     eligible: bool
     estimated_amount: Optional[float] = None
+    info_url: Optional[str] = None
     criteria_details: List[CriterionResult]
 
 class EngineResponse(BaseModel):

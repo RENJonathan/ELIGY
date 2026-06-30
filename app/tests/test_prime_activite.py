@@ -36,6 +36,8 @@ def test_scenario_1_salarie_francais_eligible():
     data = response.json()
     prime_info = next(b for b in data["user_eligible_benefits"] if b["benefit_name"] == "Prime d'activité")
     assert prime_info["eligible"] is True
+    assert "info_url" in prime_info
+    assert prime_info["info_url"].startswith("http")
 
 def test_scenario_2_etudiant_sous_seuil_ineligible():
     """Scénario 2: Étudiant gagnant 600€ (inférieur au seuil de 1117.26€) -> Doit être refusé."""
