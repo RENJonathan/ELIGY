@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.evaluate import router as evaluate_router_v1
 
 app = FastAPI(
-    title="ZIZOFA-ALLOCS - Dynamic Business Rules Engine",
+    title="ELIGI - Dynamic Business Rules Engine",
     description="Decoupled backend rule engine driven by dictionary configurations.",
     version="2.0.0"
 )
