@@ -50,6 +50,22 @@ h2 { margin: 0; font: 800 clamp(1.45rem, 4vw, 2rem) Sora, sans-serif; }
 .benefit li > span { font-weight: 800; }
 .benefit li.pass > span { color: #21915a; }
 .benefit li.fail > span { color: #c34a40; }
+.benefit .documents-panel { margin: 0 1rem 1rem; padding: 0; border: 1px solid #dce7e1; border-radius: 10px; background: #f7fbf8; }
+.documents-panel > summary { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .75rem .85rem; color: #1d704b; cursor: pointer; list-style: none; }
+.documents-panel > summary::-webkit-details-marker { display: none; }
+.documents-panel > summary::after { content: '+'; order: 3; font: 700 1rem Sora, sans-serif; }
+.documents-panel[open] > summary::after { content: '−'; }
+.documents-panel > summary span { font-weight: 700; }
+.documents-panel > summary small { margin-left: auto; color: #728077; font-size: .68rem; font-weight: 500; }
+.documents-content { padding: 0 .85rem .85rem; border-top: 1px solid #dce7e1; }
+.benefit .documents-content ul { margin-top: .75rem; }
+.benefit .documents-content li { position: relative; padding-left: 1rem; }
+.benefit .documents-content li::before { content: '•'; position: absolute; left: 0; color: #23895a; font-weight: 800; }
+.documents-content > p { margin: .75rem 0; line-height: 1.45; }
+.document-examples { display: grid; gap: .4rem; }
+.document-examples a { color: #216caa; font-weight: 600; text-decoration: none; }
+.document-examples a:hover { text-decoration: underline; }
+.documents-content .fiction-warning { margin-bottom: 0; padding: .6rem .7rem; color: #8d332a; background: #fff0ed; border-radius: 7px; font-size: .68rem; }
 .benefit-action { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: 0 1rem 1rem; min-height: 44px; padding: .7rem 1rem; border-radius: 10px; color: white; background: #23895a; font: 700 .82rem Sora, sans-serif; text-decoration: none; transition: background .15s, transform .15s; }
 .benefit-action:hover { background: #176f48; transform: translateY(-1px); }
 .benefit-action:focus-visible { outline: 3px solid rgba(35,137,90,.25); outline-offset: 2px; }

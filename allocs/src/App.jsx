@@ -37,6 +37,72 @@ const BENEFIT_ACTION_URLS = {
   "Allocations Familiales": "https://www.caf.fr/allocataires/aides-et-demarches/droits-et-prestations/vie-personnelle/les-allocations-familiales-af",
 };
 
+const BENEFIT_DOCUMENTS = {
+  "Prime d'activité": {
+    items: [
+      "Pièce d’identité ou passeport",
+      "Relevé d’identité bancaire si vous n’êtes pas encore allocataire",
+      "Justificatifs des ressources du foyer des 3 derniers mois",
+      "Avis d’imposition N-2 dans certaines situations, notamment pour les indépendants",
+    ],
+    examples: [
+      ["Exemple de relevé de ressources", "/documents/declaration-ressources-exemple.pdf"],
+      ["Checklist fictive du dossier", "/documents/checklist-dossier-exemple.pdf"],
+    ],
+  },
+  "Aide Médicale de l'État (AME)": {
+    items: [
+      "Document justifiant votre identité et celle des personnes à charge",
+      "Justificatif d’une résidence stable en France depuis plus de 3 mois",
+      "Justificatifs des ressources du foyer des 12 derniers mois",
+      "Formulaire de demande d’AME complété",
+    ],
+    examples: [
+      ["Exemple d’attestation d’hébergement", "/documents/attestation-hebergement-exemple.pdf"],
+      ["Exemple de déclaration de ressources", "/documents/declaration-ressources-exemple.pdf"],
+      ["Checklist fictive du dossier", "/documents/checklist-dossier-exemple.pdf"],
+    ],
+  },
+  "Allocations Familiales": {
+    items: [
+      "Pièces d’état civil des enfants si elles sont demandées",
+      "Document justifiant votre situation familiale ou votre résidence si nécessaire",
+      "Titre ou droit au séjour selon votre situation",
+      "Relevé d’identité bancaire si la Caf le demande",
+    ],
+    examples: [
+      ["Checklist fictive du dossier", "/documents/checklist-dossier-exemple.pdf"],
+      ["Exemple d’attestation d’hébergement", "/documents/attestation-hebergement-exemple.pdf"],
+    ],
+  },
+};
+
+function BenefitDocuments({ benefitName }) {
+  const documents = BENEFIT_DOCUMENTS[benefitName];
+  if (!documents) return null;
+
+  return (
+    <details className="documents-panel">
+      <summary>
+        <span>Documents à préparer</span>
+        <small>Liste indicative</small>
+      </summary>
+      <div className="documents-content">
+        <ul>
+          {documents.items.map((document) => <li key={document}>{document}</li>)}
+        </ul>
+        <p>Les pièces exactes peuvent varier selon votre situation. Vérifiez la liste donnée par l’organisme officiel.</p>
+        <div className="document-examples">
+          {documents.examples.map(([label, href]) => (
+            <a key={href} href={href} target="_blank" rel="noreferrer">{label} <span aria-hidden="true">↗</span></a>
+          ))}
+        </div>
+        <p className="fiction-warning">Ces exemples sont fictifs, non valables et ne doivent pas être transmis à une administration.</p>
+      </div>
+    </details>
+  );
+}
+
 function NumberField({ name, label, value, onChange, min = 0, max, suffix, error }) {
   return (
     <div className="field">
@@ -215,6 +281,7 @@ export default function Allocs() {
                         ))}
                       </ul>
                     </details>
+                    {benefit.eligible && <BenefitDocuments benefitName={benefit.benefit_name} />}
                     {benefit.eligible && BENEFIT_ACTION_URLS[benefit.benefit_name] && (
                       <a
                         className="benefit-action"
