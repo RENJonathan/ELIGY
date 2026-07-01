@@ -45,8 +45,6 @@ h2 { margin: 0; font: 800 clamp(1.45rem, 4vw, 2rem) Sora, sans-serif; }
 .eligible .benefit-heading > span { color: #12633d; background: #e5f7ed; }
 .benefit details { padding: 0 1rem 1rem; color: #596579; font-size: .8rem; }
 .benefit summary { cursor: pointer; font-weight: 600; }
-.benefit-link { display: inline-flex; align-items: center; margin: 0 1rem 1rem; color: #287eb8; font-weight: 600; text-decoration: none; }
-.benefit-link:hover { text-decoration: underline; }
 .benefit ul { display: grid; gap: .45rem; margin: .8rem 0 0; padding: 0; list-style: none; }
 .benefit li { display: flex; gap: .5rem; }
 .benefit li > span { font-weight: 800; }
